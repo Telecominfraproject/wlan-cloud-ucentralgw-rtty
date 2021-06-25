@@ -1,0 +1,119 @@
+# System
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+images:
+  rttys:
+    repository: tip-tip-wlan-cloud-ucentral.jfrog.io/rttys
+    tag: 3.6.0
+    pullPolicy: IfNotPresent
+  dockerize:
+    repository: jwilder/dockerize
+    tag: 0.6.1
+    pullPolicy: IfNotPresent
+
+services:
+  rttys:
+    type: NodePort
+    ports:
+      dev:
+        servicePort: 5912
+        targetPort: 5912
+        protocol: TCP
+      web:
+        servicePort: 5914
+        targetPort: 5914
+        protocol: TCP
+      user:
+        servicePort: 5913
+        targetPort: 5913
+        protocol: TCP
+
+checks:
+  rttys:
+    liveness:
+      httpGet:
+        port: user
+        scheme: HTTPS
+    readiness:
+      httpGet:
+        port: user
+        scheme: HTTPS
+
+ingresses:
+  default:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+    - chart-example.local
+    paths:
+    - path: /
+      serviceName: rttys
+      servicePort: user
+
+volumes:
+  rttys:
+    - name: config
+      mountPath: /rttys/rttys.conf
+      subPath: rttys.conf
+      # Template below will be rendered in template
+      volumeDefinition: |
+        secret:
+          secretName: {{ include "rttys.fullname" . }}-config
+    - name: certs
+      mountPath: /rttys/certs
+      volumeDefinition: |
+        secret:
+          secretName: {{ include "rttys.fullname" . }}-certs
+
+# Check https://github.com/bitnami/charts/tree/master/bitnami/mysql for values details
+mysql:
+  enabled: true
+  # Used if enabled == false and we want to connect to external DB
+  host: localhost
+  # Used if enabled == true and we want to install new instance in K8s
+  image:
+    registry: docker.io
+    repository: bitnami/mysql
+    tag: 5.7.34-debian-10-r44
+  auth:
+    rootPassword: rootPassword
+    database: rttys
+    username: rttys
+    password: rttys
+  primary:
+    persistence:
+      storageClass: gp2
+      size: 10Gi
+
+config:
+  #webRedirUrl: "" # Auth for http
+  token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  whiteList: "*"
+
+certs:
+  restapi-cert.pem: ""
+  restapi-key.pem: ""
+  restapi-ca.pem: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
