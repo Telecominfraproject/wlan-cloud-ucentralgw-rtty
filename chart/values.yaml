@@ -87,7 +87,6 @@ mysql:
     password: rttys
   primary:
     persistence:
-      storageClass: gp2
       size: 10Gi
 
 config:
