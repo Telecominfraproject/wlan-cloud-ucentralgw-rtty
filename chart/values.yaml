@@ -7,7 +7,7 @@ fullnameOverride: ""
 images:
   rttys:
     repository: tip-tip-wlan-cloud-ucentral.jfrog.io/rttys
-    tag: 3.6.0
+    tag: 3.5.0 # 3.6.0 is also supported, but requires MySQL
     pullPolicy: IfNotPresent
   dockerize:
     repository: jwilder/dockerize
@@ -72,7 +72,7 @@ volumes:
 
 # Check https://github.com/bitnami/charts/tree/master/bitnami/mysql for values details
 mysql:
-  enabled: true
+  enabled: false
   # Used if enabled == false and we want to connect to external DB
   host: localhost
   # Used if enabled == true and we want to install new instance in K8s
@@ -94,6 +94,9 @@ config:
   #webRedirUrl: "" # Auth for http
   token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   whiteList: "*"
+  # Required only for 3.5.0
+  httpUsername: rttys
+  httpPassword: rttys
 
 certs:
   restapi-cert.pem: ""

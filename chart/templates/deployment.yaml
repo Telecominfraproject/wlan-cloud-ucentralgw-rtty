@@ -30,15 +30,17 @@ spec:
 
       initContainers:
 
+        {{- if .Values.mysql.enabled }}
         - name: wait-db
           image: "{{ .Values.images.dockerize.repository }}:{{ .Values.images.dockerize.tag }}"
           imagePullPolicy: {{ .Values.images.dockerize.pullPolicy }}
           command:
             - dockerize
             - -wait
-            - tcp://{{ if .Values.mysql.enabled }}{{ .Release.Name }}-mysql{{ else }}{{ .Values.mysql.host }}{{ end }}:3306
+            - tcp://{{ .Release.Name }}-mysql:3306
             - -timeout
             - 60s
+        {{- end }}
 
       containers:
 
