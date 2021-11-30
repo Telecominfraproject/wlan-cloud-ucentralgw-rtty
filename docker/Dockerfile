@@ -1,10 +1,10 @@
-FROM node AS source
-ARG RTTYS_VERSION=v3.6.0
+FROM node:16 AS source
+ARG RTTYS_VERSION=v3.5.0
 RUN GIT_CURL_VERBOSE=1 GIT_TRACE=1 git clone https://github.com/zhaojh329/rttys.git /rttys/ \
     && cd /rttys \
     && git checkout $RTTYS_VERSION
 
-FROM node AS frontend
+FROM node:16 AS frontend
 WORKDIR /build
 COPY --from=source /rttys/frontend ./
 RUN npm install && npm run build
@@ -24,5 +24,7 @@ FROM alpine AS runtime
 WORKDIR /rttys
 RUN apk update && \
     apk add --no-cache linux-pam-dev
-COPY  --from=backend /build/rttys /rttys/rttys
-ENTRYPOINT ["/rttys/rttys"]
+COPY --from=backend /build/rttys /rttys/rttys
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/rttys/rttys"]
