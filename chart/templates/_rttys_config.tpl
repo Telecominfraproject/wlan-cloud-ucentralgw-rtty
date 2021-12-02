@@ -5,8 +5,8 @@ addr-web: :{{ .Values.services.rttys.ports.web.targetPort }}
 {{ if .Values.config.webRedirUrl }}
 web-redir-url: {{ .Values.config.webRedirUrl }}
 {{ end }}
-http-username: {{ .Values.config.httpUsername }}
-http-password: {{ .Values.config.httpPassword }}
+http-username: {{ randAlphaNum 20 }}
+http-password: {{ randAlphaNum 20 }}
 ssl-cert: /rttys/certs/restapi-cert.pem
 ssl-key: /rttys/certs/restapi-key.pem
 ssl-ca: /rttys/certs/restapi-ca.pem
