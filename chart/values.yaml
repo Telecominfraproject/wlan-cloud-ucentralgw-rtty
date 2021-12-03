@@ -93,9 +93,6 @@ config:
   #webRedirUrl: "" # Auth for http
   token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   whiteList: "*"
-  # Required only for 3.5.0
-  httpUsername: rttys
-  httpPassword: rttys
 
 certs:
   restapi-cert.pem: ""
