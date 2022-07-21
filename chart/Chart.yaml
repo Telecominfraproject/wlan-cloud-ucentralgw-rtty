@@ -6,5 +6,5 @@ version: 0.1.0
 dependencies:
 - name: mysql
   repository: https://tip.jfrog.io/artifactory/tip-wlan-cloud-ucentral-helm/
-  version: 8.6.2
+  version: 8.8.3
   condition: mysql.enabled
